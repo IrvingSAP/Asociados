@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Caja - Movimientos</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Resumen</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="table-responsive">
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped py-2 cell-border compact" id="TDatCaja">
+              <thead>
+                <tr style="font-size: 12px;">
+                  <th>Fec-Caja</th>
+                  <th>Fec-Reg</th>
+                  <th>Socio</th>
+                  <th>Prestamo</th>
+                  <th>Accion</th>
+                  <th>Motivo</th>
+                  <th>Consec.</th>
+                  <th>FechaN</th>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>Acumulado</th>
+                  <th>Observacion</th>
+                  <th>ENT/SAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for caja in mCaja %}
+                  <tr style="font-size: 11px;">
+                    <td>{{ caja.yymm_Caja }}</td>
+                    <td>{{ caja.fec_Registro|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ caja.nombre }}</td>
+                    <td>{{ caja.cod_Prestamo }}</td>
+                    <td>{{ caja.accion_Caja }}</td>
+                    <td>{{ caja.motivo_Caja }}</td>
+                    <td>{{ caja.sec_Caja }}</td>
+                    <td>{{ caja.fec_AplicaN }}</td>
+                    <td>{{ caja.fec_Aplica|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ caja.monto_Aplica }}</td>
+                    <td>{{ caja.s_Acumulado }}</td>
+                    <td>{{ caja.observacion_Caja }}</td>
+                    <td>{{ caja.tipo_Motivo }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <!-- Bloque Botones -->
+            <div class="crad col-md-2 mt-2">
+              <a class="btn btn-secondary btn-sm" href="{% url 'selSocioCaja' %}" role="button">Cancelar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src="{% static 'caja/js/TDatExt.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,295 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Cancela Prestamo</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Cancela</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="{% static 'core/css/ecreaPrestamo.css' %}" rel="stylesheet" /> -->
+
+  <div class="container-fluid">
+    <div class="row" style="font-size: 15px">
+      <form action="/pago/registraCancela/" method="post">
+        {% csrf_token %}
+        <!-- Información personal -->
+        <div class="card" style="padding-bottom: 1em; margin-top: 1em;">
+          <div id="personalInfo" class="mt-1">
+            Información Personal<div class="row col-12">
+              <div class="col-auto">
+                <input type="text" value="{{ socio.id_asociado }}" id="txtid_asociado" name="txtid_asociado" style="height: 20px; width: 65px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.nombre }}" id="txtnombre" name="txtnombre" style="height: 20px; width: 150px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.telefono }}" id="txttelefono" name="txttelefono" style="height: 20px; width: 120px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.correo }}" id="txtcorreo" name="txtcorreo" style="height: 20px; width: 180px;" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-8 col-lg-10 col-xl-10">
+            <div class="table-responsive">
+              <div class="card">
+                <div class="card-body">
+                  <table class="table table-striped py-2 cell-border compact" id="TselSocioD">
+                    <thead>
+                      <tr>
+                        <th>N-Reg</th>
+                        <th>Prestamo</th>
+                        <th>Monto</th>
+                        <th>Fec-Ini</th>
+                        <th>Fec-Fin</th>
+                        <th>Int-Pend</th>
+                        <th>Sald-Pend</th>
+                        <th>Seleccion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pendientes in PPendientes %}
+                        <tr>
+                          <td>{{ pendientes.id_MP }}</td>
+                          <td>{{ pendientes.cod_Prestamo }}</td>
+                          <td>{{ pendientes.monto_Prestamo }}</td>
+                          <td>{{ pendientes.fec_Ini|date:'SHORT_DATE_FORMAT' }}</td>
+                          <td>{{ pendientes.fec_Fin|date:'SHORT_DATE_FORMAT' }}</td>
+                          <td>{{ pendientes.int_cal }}</td>
+                          <td>{{ pendientes.sal_pendiente }}</td>
+                          <td>
+                            <a href="#"><i class="bi bi-check2-square"></i></a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque Carga Prestamo -->
+        <div class="card col-sm-10" style="padding-bottom: 1em;margin-top: 1em;">
+          <div class="finance-block">
+            <div style="color:darkblue">Cancela Prestamo</div>
+            <div class="row mb-1 col-sm-10">
+              <div class="col-auto">
+                <label for="txtregmov" class="form-label">N-Reg</label>
+                <input style="height: 30px; width: 70px; padding: 6px;" type="text" class="form-control" name="txtregmov" id="txtregmov" placeholder="0" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtcodPrest" class="form-label">Prestamo</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtcodPrest" id="txtcodPrest" placeholder="0" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtmontPrestamoO" class="form-label">Monto</label>
+                <input style="height: 30px; width: 120px;" type="text" class="form-control" name="txtmontPrestamoO" id="txtmontPrestamoO" placeholder="0.00" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtIntPrestamo" class="form-label">% Int</label>
+                <input style="height: 30px; width: 70px;" type="text" class="form-control" name="txtIntPrestamo" id="txtIntPrestamo" placeholder="15 %" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtFecIniP" class="form-label">Fecha Inicio</label>
+                <input style="height: 30px; width: 135px;" type="date" class="form-control" name="txtFecIniP" id="txtFecIniP" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtFecFinP" class="form-label">Fecha Pago</label>
+                <input style="height: 30px; width: 135px;" type="date" class="form-control" name="txtFecFinP" id="txtFecFinP" />
+              </div>
+            </div>
+            <div class="row mb-3 mt-2">
+              <div class="col-auto">
+                <label for="txtDcal" class="form-label">Dias Cal</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtDcal" id="txtDcal" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtIntcal" class="form-label">Int Calculado</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtIntcal" id="txtIntcal" readonly />
+              </div>
+              <div class="col-auto">
+                <label for="txtSPend" class="form-label">Totala Cancelar</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtSPend" id="txtSPend" readonly />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="txtObserva" class="form-label">Observacion...</label>
+                <input style="width: 700px;" type="text" class="form-control" id="txtObserva" name="txtObserva" placeholder="Datos del Credito" required />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bloque Botones -->
+        <div class="crad col-md-3 mt-2">
+          <a class="btn btn-secondary btn-sm" onclick="validaCancela()" href="{% url 'selSocioPago' %}" role="button">Cancelar</a>
+          <button type="submit" id="Crear" class="btn btn-success btn-sm">Crear</button>
+        </div>
+        <div class="input-group mb-3" style="display: none;" >
+          <input type="text" id="txtValEnt" name="txtValEnt" maxlength="1" readonly />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="valueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Algunas acciones presentan error</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <div>No selecciono un prestamo</div>
+          <div>No indico la fecha de pago</div>
+          <div>Int Cal, no puede ser Menor/Igual a cero(0)</div>
+          <div>Sald-Pagar, no puede ser Menor/Igual a cero(0)</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+
+        document.getElementById('txtIntcal').value = 0
+        document.getElementById('txtDcal').value = 0     
+        document.getElementById('txtSPend').value = 0
+        document.getElementById('txtFecFinP').disabled = true
+        document.getElementById('Crear').disabled = true 
+        document.getElementById('txtValEnt').value = 'True' 
+    })
+
+    // valida y evita que se aplique el formulario sin quere
+    function validaCancela() {
+      // event.preventDefault() // Evita que el formulario se envíe
+      document.getElementById('txtValEnt').value = 'False'
+    }
+
+    function parseAndFormatFloat(value) {
+        // Convertir la cadena a un número de punto flotante
+        let floatValue = parseFloat(value);
+        
+        // Verificar si el valor es un número
+        if (isNaN(floatValue)) {
+            return NaN;
+        }
+        
+        // Formatear el número a 2 decimales
+        return floatValue.toFixed(2);
+    }
+    
+    // Selecciona Prestamo
+    
+    $('#TselSocioD tbody').on('click', 'tr', function () {
+      var celdas = $(this).find('td')
+
+      //Capturo los campos del registro selecionado
+      var vcol0 = $(celdas[0]).text() // Columna Registro
+      var vcol1 = $(celdas[1]).text() // Columna Cod-Prestamo
+      var vcol2 = $(celdas[2]).text() // Columna Monto
+      var vcol3 = $(celdas[3]).text() // Columna Fec-Inicio
+
+      document.getElementById('txtregmov').value = vcol0
+      document.getElementById('txtcodPrest').value = vcol1
+      document.getElementById('txtmontPrestamoO').value = vcol2
+    
+      // otrogo el valor a fecha-inicio
+      var vstr = vcol3
+      var partes = vstr.split('/')
+      var convfec = partes[2] + '-' + partes[1] + '-' + partes[0]
+    
+      document.getElementById('txtFecIniP').value = convfec
+      document.getElementById('txtFecFinP').disabled = false
+      document.getElementById('Crear').disabled = true
+    
+      // Obtener la fecha actual
+      const hoy = new Date()
+      // Establecer el día al primer día del mes
+      const primerDiaDelMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+      // Formatear la fecha en formato YYYY-MM-DD
+      const formatoFecha = primerDiaDelMes.toISOString().split('T')[0]
+      // Asignar la fecha al campo de entrada
+      document.getElementById('txtFecFinP').value = formatoFecha
+      document.getElementById('txtDcal').value = 0
+      document.getElementById('txtIntcal').value = 0
+      document.getElementById('txtSPend').value = 0
+    })
+    
+    // Seleciono Fecha de Pago
+    document.getElementById('txtFecFinP').addEventListener('change', function () {
+    
+      // Cambia fecfinN
+      document.getElementById('Crear').disabled = true
+    
+      // saca la diferncia en dias
+    
+      var fdd1 = new Date(document.getElementById('txtFecIniP').value)
+      var fdd2 = new Date(document.getElementById('txtFecFinP').value)
+      var dt = Math.abs(fdd2 - fdd1)
+      var dtDias = Math.ceil(dt / (1000 * 60 * 60 * 24))
+      document.getElementById('txtDcal').value = dtDias
+    
+      // Calculo el interes generado
+      strmont = txtmontPrestamoO.value.replace(/,/g, '.')
+      var vmonto = parseAndFormatFloat(strmont);
+      var Pint = 15 / 100
+      var calint = ((vmonto * Pint) / 30) * dtDias
+      var int = parseAndFormatFloat(calint);
+    
+      document.getElementById('txtIntcal').value = int
+
+      event.preventDefault() // Evita que el formulario se envíe
+      fecpag = document.getElementById('txtFecFinP').value
+
+      strmont = txtIntcal.value.replace(/,/g, '.')
+      var mIntcal = parseAndFormatFloat(strmont);
+
+      strmont = txtmontPrestamoO.value.replace(/,/g, '.')
+      var mMonto = parseAndFormatFloat(strmont);
+
+       var SalPend = parseFloat(mIntcal) + parseFloat(mMonto)
+       SalPend =  parseAndFormatFloat(SalPend)
+
+      document.getElementById('txtSPend').value = SalPend
+        
+      vRegmov = txtregmov.value
+
+      vDcal = txtDcal.value
+
+      var error ="OK"
+
+        if (parseInt(vRegmov) <= 0){
+            $('#valueModal').modal('show')
+            error ="Error"
+          }
+
+        if (parseInt(vDcal) <= 0){
+            $('#valueModal').modal('show')
+            error ="Error"
+        }
+
+        if (error == "OK"){
+          document.getElementById('Crear').disabled = false
+          vobserva = 'Cancela..Deuda-' + mMonto + ', Interes ' + mIntcal + ', Total - '  + SalPend
+          document.getElementById('txtObserva').value = vobserva
+        }
+
+
+    })
+
+  </script>
+  <script src="{% static 'pago/js/TselSocioD.js' %}"></script>
+{% endblock %}

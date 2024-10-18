@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Consulta Socio</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Pendientes</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="{% static 'core/css/ecreaPrestamo.css' %}" rel="stylesheet" /> -->
+
+  <div class="container-fluid">
+    <div class="row" style="font-size: 15px">
+      <form action="/pago/registraPagoInt/" method="post" > {% csrf_token %}
+        <!-- Información personal -->
+        <div class="card" style="padding-bottom: 1em; margin-top: 1em;">
+          <div id="personalInfo" class="mt-1">Información Personal
+            <div class="row col-12">
+              <div class="col-auto">
+                <input type="text" value="{{ socio.id_asociado }}" id="txtid_asociado" name="txtid_asociado" 
+                        style="height: 20px; width: 65px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.nombre }}" id="txtnombre" name="txtnombre" 
+                        style="height: 20px; width: 150px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.telefono }}" id="txttelefono" name="txttelefono" 
+                        style="height: 20px; width: 120px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.correo }}" id="txtcorreo" name="txtcorreo" 
+                        style="height: 20px; width: 180px;" readonly />
+              </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="card col-12">
+            <div class="table-responsive">
+        <!--      <div class="card">
+                <div class="card-body"> -->
+                  <table class="table table-striped py-2 cell-border compact" id="TselSocioD">
+                    <thead>
+                      <tr>
+                        <th>N-Reg</th>
+                        <th>Prestamo</th>
+                        <th>Monto</th>
+                        <th>Fec-Ini</th>
+                        <th>Fec-Fin</th>
+                        <th>Int-Pend</th>
+                        <th>Sald-Pend</th>
+                        <th>Seleccion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pendientes in PPendientes %}
+                        <tr>
+                          <td>{{ pendientes.id_MP }}</td>
+                          <td>{{ pendientes.cod_Prestamo }}</td>
+                          <td>{{ pendientes.monto_Prestamo }}</td>
+                          <td>{{ pendientes.fec_Ini|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.fec_Fin|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.int_cal }}</td>
+                          <td>{{ pendientes.sal_pendiente }}</td>
+                          <td>
+                            <a href=" {% url "conSocPendDet" socio.id_asociado pendientes.cod_Prestamo   %} "><i class="bi bi-alarm"></i></a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+          <!--      </div>
+              </div> -->
+            </div>
+        </div>
+
+        <!-- Bloque Carga Prestamo -->
+        <div class="card col-12" style="padding-bottom: 1em;margin-top: 1em;">
+          <div class="finance-block">
+            <div style="color:darkblue">
+              Cancela Interes
+            </div>
+            <div class="row mb-1">
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="txtregmov" class="form-label">N-Reg</label>
+                <input style="height: 30px; width: 70px; padding: 6px;" type="text" class="form-control" name="txtregmov" id="txtregmov" placeholder="0" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="txtcodPrest" class="form-label">Prestamo</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtcodPrest" id="txtcodPrest" placeholder="0" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="tMonto" class="form-label">Monto</label>
+                <input style="height: 30px; width: 120px;" type="text" class="form-control" name="tMonto" id="tMonto" placeholder="0.00" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 40px; padding: 03px;">
+                <label for="txtIntPrestamo" class="form-label">% Int</label>
+                <input style="height: 30px; width: 70px;" type="text" class="form-control" name="txtIntPrestamo" id="txtIntPrestamo" placeholder="15 %" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bloque Botones -->
+        <div class="crad col-md-2 mt-2">
+          <a class="btn btn-secondary btn-sm" href="{% url 'conSocio' %}" role="button">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+        
+  <script src="{% static 'pago/js/TselSocioD.js' %}"></script>
+{% endblock %}

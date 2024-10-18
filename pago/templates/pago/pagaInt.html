@@ -1,0 +1,263 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Paga INT</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Pago</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="{% static 'core/css/ecreaPrestamo.css' %}" rel="stylesheet" /> -->
+
+  <div class="container-fluid">
+    <div class="row" style="font-size: 15px">
+      <form action="/pago/registraPagoInt/" method="post" > {% csrf_token %}
+        <!-- Información personal -->
+        <div class="card" style="padding-bottom: 1em; margin-top: 1em;">
+          <div id="personalInfo" class="mt-1">Información Personal
+            <div class="row col-12">
+              <div class="col-auto">
+                <input type="text" value="{{ socio.id_asociado }}" id="txtid_asociado" name="txtid_asociado" 
+                        style="height: 20px; width: 65px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.nombre }}" id="txtnombre" name="txtnombre" 
+                        style="height: 20px; width: 150px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.telefono }}" id="txttelefono" name="txttelefono" 
+                        style="height: 20px; width: 120px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.correo }}" id="txtcorreo" name="txtcorreo" 
+                        style="height: 20px; width: 180px;" readonly />
+              </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-8 col-lg-10 col-xl-10">
+            <div class="table-responsive">
+              <div class="card">
+                <div class="card-body">
+                  <table class="table table-striped py-2 cell-border compact" id="TselSocioD">
+                    <thead>
+                      <tr>
+                        <th>N-Reg</th>
+                        <th>Prestamo</th>
+                        <th>Monto</th>
+                        <th>Fec-Ini</th>
+                        <th>Fec-Fin</th>
+                        <th>Int-Pend</th>
+                        <th>Sald-Pend</th>
+                        <th>Seleccion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pendientes in PPendientes %}
+                        <tr>
+                          <td>{{ pendientes.id_MP }}</td>
+                          <td>{{ pendientes.cod_Prestamo }}</td>
+                          <td>{{ pendientes.monto_Prestamo }}</td>
+                          <td>{{ pendientes.fec_Ini|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.fec_Fin|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.int_cal }}</td>
+                          <td>{{ pendientes.sal_pendiente }}</td>
+                          <td>
+                            <a href="#" ><i class="bi bi-check2-square"></i></a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque Carga Prestamo -->
+        <div class="card col-sm-10" style="padding-bottom: 1em;margin-top: 1em;">
+          <div class="finance-block">
+            <div style="color:darkblue">
+              Cancela Interes
+            </div>
+            <div class="row mb-1">
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="txtregmov" class="form-label">N-Reg</label>
+                <input style="height: 30px; width: 70px; padding: 6px;" type="text" class="form-control" name="txtregmov" id="txtregmov" placeholder="0" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="txtcodPrest" class="form-label">Prestamo</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtcodPrest" id="txtcodPrest" placeholder="0" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 05px; padding: 03px;">
+                <label for="txtmontPrestamoO" class="form-label">Monto</label>
+                <input style="height: 30px; width: 120px;" type="text" class="form-control" name="txtmontPrestamoO" id="txtmontPrestamoO" placeholder="0.00" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 40px; padding: 03px;">
+                <label for="txtIntPrestamo" class="form-label">% Int</label>
+                <input style="height: 30px; width: 70px;" type="text" class="form-control" name="txtIntPrestamo" id="txtIntPrestamo" placeholder="15 %" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 25px; padding: 03px;">
+                <label for="txtFecIniP" class="form-label">Fecha Inicio</label>
+                <input style="height: 30px; width: 135px;" type="date" class="form-control" name="txtFecIniP" id="txtFecIniP" readonly />
+              </div>
+              <div class="col-auto" style="margin-left: 25px; padding: 03px;">
+                <label for="txtFecFinP" class="form-label">Fecha Pago</label>
+                <input style="height: 30px; width: 135px;" type="date" class="form-control" name="txtFecFinP" id="txtFecFinP" required />
+              </div>
+              <div class="col-auto" style="margin-left: 40px; padding: 03px;">
+                <label for="txtIntcal" class="form-label">Int Calculado</label>
+                <input style="height: 30px; width: 80px;" type="text" class="form-control" name="txtIntcal" id="txtIntcal" readonly />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div style="color:darkblue">
+                Nuevo Registro
+              </div>
+              <div class="col-md-2">
+                <label for="txtmontPrestamoF" class="form-label">Monto Prestamo</label>
+                <input type="text" class="form-control" name="txtmontPrestamoF" id="txtmontPrestamoF" placeholder="0.00" readonly />
+              </div>
+              <div class="col-md-2">
+                <label for="mayorPrestamo" class="form-label">% Int</label>
+                <input type="text" class="form-control" name="txtIntPrestamo" id="txtIntPrestamo" placeholder="15 %" readonly />
+              </div>
+              <div class="col-md-2">
+                <label for="txtFecInic" class="form-label">Fecha Inicial</label>
+                <input type="date" class="form-control" name="txtFecInic" id="txtFecInic" readonly />
+              </div>
+              <div class="col-md-2">
+                <label for="txtFecFinc" class="form-label">Fecha Final</label>
+                <input type="date" class="form-control" name="txtFecFinc" id="txtFecFinc" readonly />
+              </div>
+              <div class="col-md-2">
+                <label for="txtFecReg" class="form-label">Fecha Registro</label>
+                <input type="date" class="form-control" name="txtFecReg" id="txtFecReg" readonly />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="txtObserva" class="form-label">Observacion...</label>
+                <input type="text" class="form-control" id="txtObserva" name="txtObserva" placeholder="Datos del Credito" required />
+              </div>
+              <div class="input-group mb-3" style="display: none;" >
+                <input type="text" id="txtValEnt" name="txtValEnt" maxlength="1" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bloque Botones -->
+        <div class="crad col-md-2 mt-2">
+          <a class="btn btn-secondary btn-sm" onclick="validaCancela()" href="{% url 'selSocioPago' %}" role="button">Cancelar</a>
+          <button type="submit" id="Crear" class="btn btn-success btn-sm">Crear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+
+      document.getElementById('txtIntcal').value = 0
+      document.getElementById('txtFecFinP').disabled=true
+      document.getElementById('Crear').disabled=true
+      document.getElementById('txtValEnt').value = 'True'
+
+    })
+    
+    // Selecciona Prestamo
+        
+    $('#TselSocioD tbody').on('click', 'tr', function() {
+        var celdas = $(this).find('td');
+        var vcol0 = $(celdas[0]).text(); // Columna 2 (índice 1)
+        var vcol1 = $(celdas[1]).text(); // Columna 2 (índice 1)
+        var vcol2 = $(celdas[2]).text(); // Columna 2 (índice 1)
+        var vcol3 = $(celdas[3]).text(); // Columna 4 (índice 3)
+        document.getElementById('txtregmov').value = vcol0
+        document.getElementById('txtcodPrest').value = vcol1
+        document.getElementById('txtmontPrestamoO').value = vcol2
+        document.getElementById('txtmontPrestamoF').value = vcol2
+
+        var vstr = vcol3;
+        var partes = vstr.split("/");
+        var convfec1 = new Date(partes[2], partes[1] - 1, partes[0]);
+        var convfec2 = partes[2] + '-' + partes[1]  + '-' + partes[0];
+
+        document.getElementById('txtFecIniP').value = convfec2
+        document.getElementById('txtFecFinP').disabled=false
+        document.getElementById('Crear').disabled=true
+
+        // Obtener la fecha actual
+        const hoy = new Date();
+        // Establecer el día al primer día del mes
+        const primerDiaDelMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        // Formatear la fecha en formato YYYY-MM-DD
+        const formatoFecha = primerDiaDelMes.toISOString().split('T')[0];
+        // Asignar la fecha al campo de entrada       
+        document.getElementById('txtFecFinP').value=formatoFecha;
+        document.getElementById('txtFecInic').value=formatoFecha;
+        document.getElementById('txtFecFinc').value=formatoFecha;
+        document.getElementById('txtFecReg').value=formatoFecha;
+        document.getElementById('txtIntcal').value=0
+
+    });
+
+    // Actualizar fecha2 cuando cambia fecha1
+    document.getElementById('txtFecFinP').addEventListener('change', function () {
+
+      // Cambia Fechas
+      var fechaInicial = document.getElementById('txtFecFinP').value;
+      var fecha = new Date(fechaInicial);
+      fecha.setDate(fecha.getDate() + 1);
+      var fechaFinal = fecha.toISOString().split('T')[0];
+      document.getElementById('txtFecInic').value = fechaFinal;
+
+      // Cambia fecfinN
+      var fechaInicial = document.getElementById('txtFecFinP').value;
+      var fecha = new Date(fechaInicial);
+      fecha.setDate(fecha.getDate() + 30);
+      var fechaFinal = fecha.toISOString().split('T')[0];
+      document.getElementById('txtFecFinc').value = fechaFinal;
+      document.getElementById('Crear').disabled=false
+
+      // Cambia fecha de registro
+      var fecha = new Date();
+      fecha.setDate(fecha.getDate());
+      var fechaFinal = fecha.toISOString().split('T')[0];
+      document.getElementById('txtFecReg').value = fechaFinal;
+
+        // saca la diferncia en dias
+
+        var fdd1 = new Date(document.getElementById('txtFecIniP').value);
+        var fdd2 = new Date(document.getElementById('txtFecFinP').value);
+        var dt = Math.abs(fdd2 - fdd1);
+        var dtDias = Math.ceil(dt / (1000 * 60 * 60 * 24));
+
+        // Calculo el interes generado
+        strmont = txtmontPrestamoO.value.replace(/,/g, ".");
+        var vmonto = strmont
+        var Pint = (15/100)
+        var int = (((vmonto * Pint)/30) * dtDias)
+        console.log('Valor ', Pint);
+        console.log('Valor ', vmonto);
+        console.log('Int-generado', int)
+
+        document.getElementById('txtIntcal').value = int;
+
+    })
+
+      // valida y evita que se aplique el formulario sin quere
+    function validaCancela() {
+      // event.preventDefault() // Evita que el formulario se envíe
+          document.getElementById('txtValEnt').value = 'False'
+  } 
+    
+  </script>
+  <script src="{% static 'pago/js/TselSocioD.js' %}"></script>
+{% endblock %}

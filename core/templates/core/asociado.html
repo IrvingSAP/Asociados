@@ -1,0 +1,79 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Mantenimiento</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>CRUD</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+  <div class="row">
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-4">
+      <h4>Ingresa - Socio</h4>
+      <div class="card">
+        <div class="card-body">
+          <form action="/registraSocio/" method="post" id="FormCrud">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Nombre" aria-label="Username" aria-describedby="addon-wrapping" id="txtNombre" name="txtNombre" maxlength="20" required />
+            </div>
+            <div class="input-group mb-3">
+              <input type="number" class="form-control" placeholder="312-589-9856" aria-label="Username" aria-describedby="addon-wrapping" 
+                    id="txtTelefono" name="txtTelefono" minlength="10" maxlength="20" required />
+            </div>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Correo" aria-label="Recipient's username" aria-describedby="basic-addon2" id="txtCorreo" name="txtCorreo" maxlength="50" required />
+              <span class="input-group-text" id="basic-addon2">@example.com</span>
+            </div>
+            <div class="input-group mb-3">
+              <select name="txtEstado" id="txtEstado" required>
+                <option selected>Seleccione el estado</option>
+                <option value="A">Activo</option>
+                <option value="I">Inactivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <a class="btn btn-secondary btn-sm" href="{% url 'home' %}" role="button">Cancelar</a>
+              <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-8 col-xl-8">
+      <div class="table-responsive">
+        <h4>Asociados</h4>
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped py-2 cell-border compact" id="TablaSocio">
+              <thead>
+                <tr>
+                  <th>Id-Socio</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Estado</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for asociado in MAsociados %}
+                  <tr>
+                    <td>{{ asociado.id_asociado }}</td>
+                    <td>{{ asociado.nombre }}</td>
+                    <td>{{ asociado.correo }}</td>
+                    <td>{{ asociado.estado }}</td>
+                    <td>
+                      <a href=" {% url 'editaSocio' asociado.id_asociado %} "><i class="bi bi-pencil-square"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'core/js/tsocio.js' %}"></script>
+  <script src="{% static 'core/js/validaSocio.js' %}"></script>
+{% endblock %}

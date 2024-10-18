@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+<h3>Caja - Movimientos</h3>
+{% endblock topbar_i %}
+{% block topbar_d %}
+<h4>Caja</h4>
+{% endblock topbar_d %}
+{% block contenido %}
+  {% load static %}
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-10 col-xl-10">
+      <div class="table-responsive">
+        <h4>Asociados</h4>
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped py-2 cell-border compact" id="TselCaja">
+              <thead>
+                <tr>
+                  <th>Mes Proceso</th>
+                  <th>Resumen</th>
+                  <th>Media</th>
+                  <th>Extendida</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for Caja in sCaja %}
+                  <tr>
+                    <td>{{ Caja.yymmCaja }}</td>
+                    <td>
+                      <a href=" {% url 'selCajaR' Caja.yymmCaja %} "><i class="bi bi-inbox"></i></a>
+                    </td>
+                    <td>
+                      <a href=" {% url 'selCajaM' Caja.yymmCaja %} "><i class="bi bi-inbox-fill"></i></a>
+                    </td>
+                    <td>
+                      <a href=" {% url 'selCajaE' Caja.yymmCaja %} "><i class="bi bi-inboxes-fill"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'caja/js/TCaja.js' %}"></script>
+{% endblock %}

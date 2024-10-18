@@ -1,0 +1,94 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Consulta Prestamo - Pendiente</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Detalle</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="{% static 'core/css/ecreaPrestamo.css' %}" rel="stylesheet" /> -->
+
+  <div class="container-fluid">
+    <div class="row" style="font-size: 15px">
+      <form action="/pago/registraPagoInt/" method="post" > {% csrf_token %}
+        <!-- Información personal -->
+        <div class="card" style="padding-bottom: 1em; margin-top: 1em;">
+          <div id="personalInfo" class="mt-1">Información Personal
+            <div class="row col-12">
+              <div class="col-auto">
+                <input type="text" value="{{ socio.id_asociado }}" id="txtid_asociado" name="txtid_asociado" 
+                        style="height: 20px; width: 65px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.nombre }}" id="txtnombre" name="txtnombre" 
+                        style="height: 20px; width: 150px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.telefono }}" id="txttelefono" name="txttelefono" 
+                        style="height: 20px; width: 120px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.correo }}" id="txtcorreo" name="txtcorreo" 
+                        style="height: 20px; width: 180px;" readonly />
+              </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="card col-12" style="font-size: 12px; ">
+            <div class="table-responsive" >
+           <!--   <div class="card"> -->
+             <!--   <div class="card-body"> -->
+                  <table class="table table-striped py-2  compact row-border" id="TselSocioDP">
+                    <thead>
+                      <tr>
+                        <th>Prestamo</th>
+                        <th>Monto</th>
+                        <th>Fec-Ini</th>
+                        <th>Fec-Fin</th>
+                        <th>Int-Inicial</th>
+                        <th>Fec-Pago</th>
+                        <th>Dias-Cal</th>
+                        <th>Int-Cal</th>
+                        <th>Pagado</th>
+                        <th>Abono</th>
+                        <th>Sald-Pend</th>
+                        <th>Observacion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for pendientes in PPendientes %}
+                        <tr>
+                          <td>{{ pendientes.cod_Prestamo }}</td>
+                          <td>{{ pendientes.monto_Prestamo }}</td>
+                          <td>{{ pendientes.fec_Ini|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.fec_Fin|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.int_cal }}</td>
+                          <td>{{ pendientes.fec_Pag_efe|date:"SHORT_DATE_FORMAT" }}</td>
+                          <td>{{ pendientes.dias_cal_Pag }}</td>
+                          <td>{{ pendientes.int_cal_Pag }}</td>
+                          <td>{{ pendientes.monto_pag }}</td>
+                          <td>{{ pendientes.abono_cap }}</td>
+                          <td>{{ pendientes.sal_pendiente }}</td>
+                          <td>{{ pendientes.Observacion }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+        <!--        </div> -->
+         <!--     </div> -->
+            </div>
+        </div>
+        <!-- Bloque Botones -->
+        <div class="crad col-md-2 mt-2">
+          <a class="btn btn-secondary btn-sm" href="{% url "conSocPend" socio.id_asociado %}" role="button">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="{% static 'consultaSocio/js/TselSocioDP.js' %}"></script>
+{% endblock %}

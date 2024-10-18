@@ -1,0 +1,156 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Nuevo Prestamo</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Crear</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+
+  <!-- Custom styles for this template -->
+  <!-- <link href="{% static 'core/css/ecreaPrestamo.css' %}" rel="stylesheet" /> -->
+
+  <div class="container-fluid">
+    <div class="row" style="font-size: 15px">
+      <form action="/prestamo/registraPrestamo/" method="post" > {% csrf_token %}
+        <!-- Información personal -->
+        <div class="card" style="padding-bottom: 1em; margin-top: 1em;">
+          <div id="personalInfo" class="mt-1">Información Personal
+            <div class="row col-12">
+              <div class="col-auto">
+                <input type="text" value="{{ socio.id_asociado }}" id="txtid_asociado" name="txtid_asociado" 
+                        style="height: 20px; width: 65px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.nombre }}" id="txtnombre" name="txtnombre" 
+                        style="height: 20px; width: 150px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.telefono }}" id="txttelefono" name="txttelefono" 
+                        style="height: 20px; width: 120px;" readonly />
+              </div>
+              <div class="col-auto">
+                <input type="text" value="{{ socio.correo }}" id="txtcorreo" name="txtcorreo" 
+                        style="height: 20px; width: 180px;" readonly />
+              </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Bloque de Finanzas -->
+        <div class="card" style="padding-bottom: 1em;margin-top: 1em;">
+          <div class="finance-block">
+            Finanzas<div class="row col-12">
+              <div class="col-4">
+                <label for="txtSActual" class="form-label">Saldo Actual</label>
+                <input type="text" value="{{ prestamo.saldoPrestamo }}" id="txtSActual" name="txtSActual" placeholder="$0.00" readonly />
+              </div>
+              <div class="col-4">
+                <label for="txtMPrestamo" class="form-label">Mayor Préstamo</label>
+                <input type="text" value="{{ prestamo.mayPrestamos }}" id="txtMPrestamo" name="txtMPrestamo" placeholder="$0.00" readonly />
+              </div>
+              <div class="col-4">
+                <label for="txtUPrestamo" class="form-label">Último</label>
+                <input style="margin-left: 30px;" type="text" value="{{ prestamo.ultPrestamo }}" id="txtUPrestamo" name="txtUPrestamo" readonly />
+              </div>
+            </div>
+            <div class="row col-12">
+              <div class="col-4">
+                <label for="txtCPrestamos" class="form-label">Solicitados</label>
+                <input style="margin-left: 12px;" type="text" value="{{ prestamo.cantPrestamos }}" id="txtCPrestamos" name="txtCPrestamos" placeholder="0" readonly />
+              </div>
+              <div class="col-4">
+                <label for="txtAPrestamos" class="form-label">Activos</label>
+                <input style="margin-left: 60px;" type="text" value="{{ prestamo.actPrestamos }}" id="txtAPrestamos" name="txtAPrestamos" placeholder="0" readonly />
+              </div>
+              <div class="col-4">
+                <label for="txtIPrestamos" class="form-label">Cancelados</label>
+                <input type="text" value="{{ prestamo.inacPrestamos }}" id="txtIPrestamos" name="txtIPrestamos" placeholder="0" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque Carga Prestamo -->
+        <div class="card" style="padding-bottom: 1em;margin-top: 1em;">
+          <div class="finance-block">
+            Crea Prestamo<div class="row mb-3">
+              <div class="col-md-2">
+                <label for="saldoActual" class="form-label">Monto Prestamo</label>
+                <input type="text" class="form-control" name="txtmontPrestamo" id="txtmontPrestamo" placeholder="0.00" required />
+              </div>
+              <div class="col-md-2">
+                <label for="mayorPrestamo" class="form-label">% Int</label>
+                <input type="text" class="form-control" name="txtIntPrestamo" id="txtIntPrestamo" placeholder="%15.00" readonly />
+              </div>
+              <div class="col-md-2">
+                <label for="txtFecIni" class="form-label">Fecha Inicial</label>
+                <input type="date" class="form-control" name="txtFecIni" id="txtFecIni" required />
+              </div>
+              <div class="col-md-2">
+                <label for="txtFecFin" class="form-label">Fecha Final</label>
+                <input type="date" class="form-control" name="txtFecFin" id="txtFecFin" readonly />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="txtObserva" class="form-label">Observacion...</label>
+                <input type="text" class="form-control" id="txtObserva" name="txtObserva" placeholder="Datos del Credito" required />
+              </div>
+              <div class="input-group mb-3" style="display: none;" >
+                <input type="text" id="txtValEnt" name="txtValEnt" maxlength="1" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bloque Botones -->
+        <div class="crad col-md-2 mt-2">
+          <a class="btn btn-secondary btn-sm" onclick="validaCancela()" href="{% url 'selSocio' %}" role="button">Cancelar</a>
+          <button type="submit" class="btn btn-success btn-sm">Crear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const txtFecIniInput = document.getElementById('txtFecIni')
+      const hoy = new Date()
+      const dia = String(hoy.getDate()).padStart(2, '0')
+      const mes = String(hoy.getMonth() + 1).padStart(2, '0') // Enero es 0
+      const año = hoy.getFullYear()
+      txtFecIniInput.value = `${año}-${mes}-${dia}`
+    
+      // Obtener la fecha actual
+      var today = new Date()
+      // Sumar 31 días a la fecha actual
+      today.setDate(today.getDate() + 31)
+      // Formatear la fecha en formato YYYY-MM-DD
+      var year = today.getFullYear()
+      var month = ('0' + (today.getMonth() + 1)).slice(-2)
+      var day = ('0' + today.getDate()).slice(-2)
+      var formattedDate = year + '-' + month + '-' + day
+      // Establecer el valor del campo de fecha
+      document.getElementById('txtFecFin').value = formattedDate
+      document.getElementById('txtValEnt').value = 'True'
+    })
+
+      // valida y evita que se aplique el formulario sin quere
+      function validaCancela() {
+        // event.preventDefault() // Evita que el formulario se envíe
+            document.getElementById('txtValEnt').value = 'False'
+    } 
+    
+    // Actualizar fecha2 cuando cambia fecha1
+    document.getElementById('txtFecIni').addEventListener('change', function () {
+      const fecha1 = new Date(this.value)
+      const fecha2 = new Date(fecha1)
+      fecha2.setDate(fecha2.getDate() + 31)
+      const año = fecha2.getFullYear()
+      const mes = ('0' + (fecha2.getMonth() + 1)).slice(-2)
+      const día = ('0' + fecha2.getDate()).slice(-2)
+      document.getElementById('txtFecFin').value = `${año}-${mes}-${día}`
+    })
+  </script>
+{% endblock %}

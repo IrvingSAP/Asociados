@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+<h3>Consulta Socio</h3>
+{% endblock topbar_i %}
+{% block topbar_d %}
+<h4>Consulta</h4>
+{% endblock topbar_d %}
+{% block contenido %}
+  {% load static %}
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-10 col-xl-10">
+      <div class="table-responsive">
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped py-2 cell-border compact" id="TconSocio">
+              <thead>
+                <tr>
+                  <th>Id-Socio</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Estado</th>
+                  <th>Pendiente</th>
+                  <th>Historico</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for asociado in MAsociados %}
+                  <tr>
+                    <td>{{ asociado.id_asociado }}</td>
+                    <td>{{ asociado.nombre }}</td>
+                    <td>{{ asociado.correo }}</td>
+                    <td>{{ asociado.estado }}</td>
+                    <td>
+                      <a href=" {% url "conSocPend" asociado.id_asociado %} "><i class="bi bi-alarm"></i></a>
+                    </td>
+                    <td>
+                      <a href=" {% url 'editaSocio' asociado.id_asociado %} "><i class="bi bi-archive"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'consultaSocio/js/TconSocio.js' %}"></script>
+{% endblock %}

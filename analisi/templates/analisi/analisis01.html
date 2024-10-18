@@ -1,0 +1,144 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Pagos</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Procesa</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+  <div class="row col-12">
+    <div class="col">
+      <div class="table-responsive">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-12">
+                <label for="startDate">Fecha de inicio:</label>
+                <input type="date" id="startDate" />
+                <label for="endDate">Fecha de fin:</label>
+                <input type="date" id="endDate" />
+                <button onclick="filterTable()">Filtrar</button>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="SelEstado" id="exampleRadios1" value="PENDIENTE" checked />
+                  <label class="form-check-label" for="exampleRadios1">Cobro Pendiente</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="SelEstado" id="exampleRadios2" value="COBRADO" />
+                  <label class="form-check-label" for="exampleRadios2">Cobro Aplicado</label>
+                </div>
+            </div>
+            <table class="table table-striped py-2 cell-border compact" id="TDatAnalisis01">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Prestamo</th>
+                  <th>Monto</th>
+                  <th>Fec-Ini</th>
+                  <th>Fec-FinN</th>
+                  <th>Fec-Fin</th>
+                  <th>Int-Pend</th>
+                  <th>Fec-PagoN</th>
+                  <th>Fec-Pago</th>
+                  <th>Dias-Cal</th>
+                  <th>Int-Pag</th>
+                  <th>Pago</th>
+                  <th>Abono</th>
+                  <th>Sald-Pend</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for mv in Movimientos %}
+                  <tr>
+                    <td>{{ mv.nombre }}</td>
+                    <td>{{ mv.cod_Prestamo }}</td>
+                    <td>{{ mv.monto_Prestamo }}</td>
+                    <td>{{ mv.fec_Ini|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ mv.fec_FinN }}</td>
+                    <td>{{ mv.fec_Fin|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ mv.int_cal }}</td>
+                    <td>{{ mv.fec_Pag_efeN|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ mv.fec_Pag_efe|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td>{{ mv.dias_cal_Pag }}</td>
+                    <td>{{ mv.int_cal_Pagl }}</td>
+                    <td>{{ mv.monto_pag }}</td>
+                    <td>{{ mv.abono_cap }}</td>
+                    <td>{{ mv.sal_pendiente }}</td>
+                    <td>{{ mv.estado_reg }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const hoy = new Date()
+      // Establecer el día al primer día del mes
+      const primerDiaDelMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+      // Formatear la fecha en formato YYYY-MM-DD
+      const formatoFecha = primerDiaDelMes.toISOString().split('T')[0]
+    
+      document.getElementById('startDate').value = formatoFecha
+      document.getElementById('endDate').value = formatoFecha
+    })
+    
+    function filterTable() {
+      const opciones = document.getElementsByName('SelEstado')
+      
+      EstadoSel = ""
+      for (let i = 0; i < opciones.length; i++) {
+        if (opciones[i].checked) {
+          console.log(`La opción activa es: ${opciones[i].value}`)
+          EstadoSel = opciones[i].value
+          break
+        }
+      }
+    
+      selfi = document.getElementById('startDate').value
+      selff = document.getElementById('endDate').value
+      selfi = selfi.split('-').join('')
+      selff = selff.split('-').join('')
+      fnumI = parseInt(selfi)
+      fnumF = parseInt(selff)
+      const table = document.getElementById('TDatAnalisis01')
+      const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr')
+      for (let i = 0; i < rows.length; i++) {
+        var FecPEnd = rows[i].cells[4].innerText // Obtener la fecha Final Pendiente
+        var FecCob = rows[i].cells[6].innerText // Obtener la fecha De pago
+        var dateEstado = rows[i].cells[12].innerText // El estado
+        console.log('FecPend' , FecPEnd)
+        console.log('FecCob' , FecCob)
+        console.log('dateEstado' , dateEstado)
+        var dstr = String(FecPEnd)
+        var dinv = dstr.split('/').reverse().join('')
+        var fnumP = parseInt(dinv)
+        console.log(fnumP)
+        var dstr = String(FecCob)
+        var dinv = dstr.split('/').reverse().join('')
+        var fnumC = parseInt(dinv)
+        console.log(fnumC)
+        if (dateEstado == "PENDIENTE"){
+          if (fnumP >= fnumI && fnumP <= fnumF ) {
+            rows[i].style.display = '' // Mostrar fila
+          } else {
+            rows[i].style.display = 'none' // Ocultar fila
+          }
+        }
+        if (dateEstado == "COBRADO"){
+          if (fnumC >= fnumI && fnumC <= fnumF ) {
+            rows[i].style.display = '' // Mostrar fila
+          } else {
+            rows[i].style.display = 'none' // Ocultar fila
+          }
+        }   
+      }
+    }
+  </script>
+
+  <script src="{% static 'analisi/js/TDat.js' %}"></script>
+{% endblock %}

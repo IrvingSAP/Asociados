@@ -1,0 +1,129 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Procesos - Cierre de Caja</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Caja</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+  <div class="row col-12">
+    <div class="col-md-4 offset-md-2">
+      <h4>Caja Actual</h4>
+      <div class="card">
+        <div class="card-body">
+          <form action="/updCierreCaja/" method="post" id="miFormulario">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Estado.............:</span>
+              <input type="text" class="form-control" id="txtEstado" name="txtEstado" value="{{ sCaja.estadoCaja }} ----> H" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Fecha Actual.:</span>
+              <input type="text" class="form-control" value="{{ sCaja.yymmCaja }}" id="txtFecpro" name="txtFecpro" maxlength="20" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Saldo Inicial...:</span>
+              <input type="text" class="form-control" value="{{ sCaja.salIniCaja }}" id="txtSalI" name="txtSalI" maxlength="20" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Entradas.........:</span>
+              <input type="text" class="form-control" value="{{ sCaja.entradaCaja }}" id="txtSalE" name="txtSalE" maxlength="50" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Salidas............:</span>
+              <input type="text" class="form-control" value="{{ sCaja.salidaCaja }}" id="txtSalS" name="txtSalS" maxlength="1" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Saldo Final.....:</span>
+              <input type="text" class="form-control" value="{{ sCaja.salFinCaja }}" id="txtSalF" name="txtSalF" maxlength="1" readonly />
+            </div>
+            <div class="form-group">
+              <div>
+                <span></span>
+              </div>
+              <div>
+                <span></span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h4>Caja propuesta</h4>
+      <div class="card">
+        <div class="card-body">
+          <form action="/proceso/updCierreCaja/" method="post" id="miFormulario">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Estado.............:</span>
+              <input type="text" class="form-control" id="txtEstadoF" name="txtEstadoF" value="M" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Fecha Actual.:</span>
+              <input type="text" class="form-control" id="txtFecproF" name="txtFecproF" maxlength="20" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Saldo Inicial...:</span>
+              <input type="text" class="form-control" id="txtSalIF" name="txtSalIF" maxlength="20" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Entradas.........:</span>
+              <input type="text" class="form-control" id="txtSalEF" name="txtSalEF" maxlength="50" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Salidas............:</span>
+              <input type="text" class="form-control" id="txtSalSF" name="txtSalSF" maxlength="1" readonly />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon2">Saldo Final.....:</span>
+              <input type="text" class="form-control" id="txtSalFF" name="txtSalFF" maxlength="1" readonly />
+            </div>
+            <div class="input-group mb-3" style="display: none;" >
+              <input type="text" id="txtValEnt" name="txtValEnt" maxlength="1" readonly />
+            </div>
+            <div class="form-group">
+              <button type="text" class="btn btn-secondary btn-sm " onclick="validaCancela()" href="{% url 'home' %}">Cancelar</button>
+              <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+              <button type="submit" disabled class="none" aria-hidden="true"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+ 
+      var SF = document.getElementById('txtSalF').value
+      var FP = document.getElementById('txtFecpro').value
+      var yyyy = parseInt(FP.substring(0, 4))
+      var MM = parseInt(FP.substring(5, 7))
+      document.getElementById('txtSalIF').value = SF
+      document.getElementById('txtSalEF').value = 0.00
+      document.getElementById('txtSalSF').value = 0.00
+      document.getElementById('txtSalFF').value = SF
+      document.getElementById('txtValEnt').value = 'True'
+
+      if (MM == 12){
+        yyyy = yyyy + 1
+        MM = 1
+      }else{
+        MM = MM + 1
+      }
+      if (MM <10){
+        FPF = yyyy + '-0' + MM
+      }else{
+        FPF = yyyy + '-' + MM
+      }
+      document.getElementById('txtFecproF').value = FPF
+  })
+
+  // valida y evita que se aplique el formulario sin quere
+  function validaCancela() {
+    // event.preventDefault() // Evita que el formulario se envíe
+          document.getElementById('txtValEnt').value = 'False'
+  }  
+  </script>
+{% endblock %}

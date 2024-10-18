@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% block topbar_i %}
+  <h3>Prestamos</h3>
+{% endblock %}
+{% block topbar_d %}
+  <h4>Crear</h4>
+{% endblock %}
+{% block contenido %}
+  {% load static %}
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-10 col-xl-10">
+      <div class="table-responsive">
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped py-2 cell-border compact" id="TselSocio">
+              <thead>
+                <tr>
+                  <th>N_Reg</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Estado</th>
+                  <th>Crea</th>
+                  <th>Financia</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for asociado in MAsociados %}
+                  <tr>
+                    <td>{{ asociado.id_asociado }}</td>
+                    <td>{{ asociado.nombre }}</td>
+                    <td>{{ asociado.correo }}</td>
+                    <td>{{ asociado.estado }}</td>
+                    <td>
+                      <a href=" {% url 'creaPrestamo' asociado.id_asociado %} "><i class="bi bi-file-earmark-plus"></i></a>
+                    </td>
+                    <td>
+                      <a href=" {% url 'pRef' asociado.id_asociado %} "><i class="bi bi-building-add"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <!-- Bloque Botones -->
+            <div class="crad col-md-2 mt-2">
+              <a class="btn btn-secondary btn-sm" href="{% url 'home' %}" role="button">Cancelar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'prestamo/js/SelSocio.js' %}"></script>
+{% endblock %}
